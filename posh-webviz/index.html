@@ -1,0 +1,108 @@
+<html>
+
+<head>
+
+<style>
+.graph {
+  width: 100%;
+}
+.graph svg {
+  width: 100%;
+  height: 100%;
+}
+</style>
+
+</head>
+
+
+<body>
+
+<div id="graph" class="graph" ></div>
+
+</body>
+
+
+<script src="js/viz-standalone.js"></script> 
+<script src="js/tools.js"></script> 
+
+<script>
+
+function request_graph(handler) {
+  sendJSON(
+  {
+    "posh": "graphviz",
+  }, handler);
+}
+
+// [r,g,b] to hex
+var rgb2hex = function(rgb) {
+    return "#" + ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]).toString(16).slice(1);
+}
+
+var nodeValue = 0;
+
+// placeholder function simulating the state retrieved from the robot
+function getCurrentState() 
+{
+  nodeValue = (nodeValue + 5) % 255;
+
+  var data = {
+    activations: {
+      mynode01: nodeValue,
+      mynode02: 255-nodeValue
+    }
+  };
+  
+  return JSON.stringify(data);
+}
+
+function update_activations() 
+{
+  console.log("update activations");
+  
+  request_graph((e) => {
+    console.log(e);
+  });
+  
+  var message = getCurrentState();
+  const data = JSON.parse(message);
+  
+  for(const [key, value] of Object.entries(data.activations)) {
+    console.log(key, value);
+    var element = document.getElementById(`${key}`);
+    
+    // HACK: the middle child is the shape
+    element.children[1].style.fill = rgb2hex([255-value, 255, 255-value]);
+  }
+}
+
+
+// wait until the viz-instance is ready and load the graph
+Viz.instance().then( (viz) => {
+
+  // static test
+  // in the future this graph wil be requested from the server
+  var graphStr = "digraph { rankdir=\"LR\"; node [shape=\"box\" style=\"filled\", color=\"#000000\", fillcolor=\"#ffffff\"] a; b; {a [id=\"mynode01\"] } -> { b [id=\"mynode02\"] }  }"
+  document.getElementById("graph").appendChild(viz.renderSVGElement(graphStr));
+  
+  // request a new graph from the server every second
+  setInterval(() => 
+  {
+    request_graph((plan) => {
+      console.log(plan);
+      console.log(viz.renderSVGElement(plan))
+      var graph = document.getElementById("graph");
+      graph.replaceChild(viz.renderSVGElement(plan), graph.firstChild);
+    });
+  }, 1000);
+  
+  // start the update function
+  //setInterval(update_activations, 100);
+});
+
+
+</script>
+
+
+
+</html>

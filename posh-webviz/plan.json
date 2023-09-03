@@ -1,0 +1,37 @@
+{
+  "Plan" : {
+    "ActionPatterns": {
+      "AP-Roam":         [ "Roam", "ForgetHuman", "ClearWaving" ],
+      "AP-ShakeHands":   [ "ApproachHuman", "ShakeHands", "LookAt" ],
+      "AP-WaveLeft":     [ "WaveLeft" ],
+      "AP-WaitForHuman": [ "CheckWatch", "ForgetHuman"],
+    },
+
+    "CompetenceElements": {
+      "CE-Roam": {"triggers": "AP-Roam", "Senses": {
+        "HumanPresent": {"value": "0", "comparator": "bool"}
+      }},
+      "CE-ShakeHands": {"triggers": "AP-ShakeHands", "Senses": {
+        "HumanPresent": {"value": "1", "comparator": "bool"},
+        "HumanPresent": {"value": "1", "comparator": "bool"}
+      }},
+      "CE-WaveLeft": {"triggers": "AP-WaveLeft", "Senses": {
+        "HumanPresent": {"value": "0", "comparator": "bool"}
+      }},
+      "CE-CheckWatch": {"triggers": "AP-CheckWatch", "Senses": {
+        "HumanPresent": {"value": "0", "comparator": "bool"}
+      }},
+    },
+    
+    "Competences": {
+    },
+    
+    "DriveElements": {
+      
+    },
+    
+    "Drives": {
+    
+    }
+  }
+}

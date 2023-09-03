@@ -1,0 +1,14 @@
+digraph
+{ 
+  rankdir = "LR"; 
+  
+  graph [splines = "true" splines = curved];
+  node [shape="box" style="filled", color="#000000", fillcolor="#ffffff"];
+  
+  a [id="mynode01"];
+  b [id="mynode02"];
+  c [id="mynode03"];
+  
+  a -> b;
+  a -> c;
+}
